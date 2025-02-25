@@ -262,6 +262,18 @@ def optimise_load_profile_energy(
     peak_heating = copy.copy(monthly_load.monthly_peak_heating_simulation_period)
     peak_cooling = copy.copy(monthly_load.monthly_peak_cooling_simulation_period)
 
+    # get g-values
+    g_values = borefield.gfunction(borefield.load.time_L3, borefield.H)
+
+    # the g-function value of the peak with length_peak hours
+    g_value_peak_injection = borefield.gfunction(borefield.load.peak_injection_duration, borefield.H)[0]
+    if borefield.load.peak_injection_duration == borefield.load.peak_extraction_duration:
+        g_value_peak_extraction = g_value_peak_injection
+    else:
+        g_value_peak_extraction = borefield.gfunction(borefield.load.peak_extraction_duration, borefield.H)[0]
+
+    g_value_month = g_values[0]
+
     for i in range(12 * borefield.load.simulation_period):
         # set iteration criteria
         cool_ok, heat_ok = False, False
